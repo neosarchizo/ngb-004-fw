@@ -1,6 +1,6 @@
 <!DOCTYPE CrossStudio_Project_File>
-<solution Name="gasian_health" target="8" version="2">
-  <project Name="gasian_health">
+<solution Name="spb2_p8" target="8" version="2">
+  <project Name="spb2_p8">
     <configuration
       Name="Common"
       arm_architecture="v7EM"
