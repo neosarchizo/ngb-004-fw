@@ -32,6 +32,7 @@
 #include "g_led.h"
 #include "battery.h"
 #include "n_fds.h"
+#include "multiplexer.h"
 
 // Libraries
 #include "packet.h"
@@ -1025,6 +1026,9 @@ static void gpio_init(void)
     APP_ERROR_CHECK(err_code);
 
     err_code = g_led_init();
+    APP_ERROR_CHECK(err_code);
+
+    err_code = multiplexer_init();
     APP_ERROR_CHECK(err_code);
 }
 
