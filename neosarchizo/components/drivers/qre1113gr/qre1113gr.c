@@ -174,7 +174,7 @@ static void qre1113gr_timeout(void *p_context)
     case 7:
     {
         nrf_gpio_pin_write(QRE1113GR_PIN_E_K, 0);
-        multiplexer_set_bit(3);
+        multiplexer_set_bit(4);
 
         app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
         break;
@@ -189,7 +189,7 @@ static void qre1113gr_timeout(void *p_context)
     case 9:
     {
         nrf_gpio_pin_write(QRE1113GR_PIN_F_K, 0);
-        multiplexer_set_bit(3);
+        multiplexer_set_bit(5);
 
         app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
         break;
@@ -204,7 +204,7 @@ static void qre1113gr_timeout(void *p_context)
     case 11:
     {
         nrf_gpio_pin_write(QRE1113GR_PIN_G_K, 0);
-        multiplexer_set_bit(3);
+        multiplexer_set_bit(6);
 
         app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
         break;
@@ -219,7 +219,7 @@ static void qre1113gr_timeout(void *p_context)
     case 13:
     {
         nrf_gpio_pin_write(QRE1113GR_PIN_H_K, 0);
-        multiplexer_set_bit(3);
+        multiplexer_set_bit(7);
 
         app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
         break;

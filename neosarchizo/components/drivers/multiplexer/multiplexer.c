@@ -45,10 +45,13 @@ void multiplexer_set_bit(uint8_t value)
 
     for (uint8_t i = 0; i < 3; i++)
     {
-        if ((1 << i) & value > 0)
+        
+        if (((1 << i) & value) > 0)
         {
+            // NRF_LOG_INFO("S%d : 1", i);
             nrf_gpio_pin_write(MULTIPLEXER_PIN_S0 + i, 1);
         } else {
+            // NRF_LOG_INFO("S%d : 0", i);
             nrf_gpio_pin_write(MULTIPLEXER_PIN_S0 + i, 0);
         }
     }
