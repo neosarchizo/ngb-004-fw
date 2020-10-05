@@ -30,6 +30,7 @@
 #include "buzzer.h"
 #include "g_button.h"
 #include "g_led.h"
+#include "g_motor.h"
 #include "battery.h"
 #include "n_fds.h"
 #include "multiplexer.h"
@@ -1028,8 +1029,14 @@ static void gpio_init(void)
     err_code = g_led_init();
     APP_ERROR_CHECK(err_code);
 
+    err_code = g_motor_init();
+    APP_ERROR_CHECK(err_code);
+
     err_code = multiplexer_init();
     APP_ERROR_CHECK(err_code);
+
+    // g_motor_set_mode(G_MOTOR_MODE_ON);
+    g_motor_set_mode(G_MOTOR_MODE_OFF);
 }
 
 static void my_fds_init(void)
