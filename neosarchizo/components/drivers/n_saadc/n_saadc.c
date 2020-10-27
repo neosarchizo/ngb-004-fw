@@ -42,7 +42,10 @@ ret_code_t n_saadc_measure(uint8_t pin, n_saadc_cb_t on_measured)
 {
     ret_code_t err_code = NRF_SUCCESS;
 
-    while(m_measuring) {
+    if (m_measuring)
+    {
+        err_code = NRF_ERROR_INTERNAL;
+        return err_code;
     }
 
     m_measuring = true;
@@ -50,7 +53,6 @@ ret_code_t n_saadc_measure(uint8_t pin, n_saadc_cb_t on_measured)
     err_code = nrf_drv_saadc_init(NULL, saadc_event_handler);
     if (err_code != NRF_SUCCESS)
     {
-        m_measuring = false;
         return err_code;
     }
 
@@ -60,28 +62,24 @@ ret_code_t n_saadc_measure(uint8_t pin, n_saadc_cb_t on_measured)
     err_code = nrf_drv_saadc_channel_init(0, &config);
     if (err_code != NRF_SUCCESS)
     {
-        m_measuring = false;
         return err_code;
     }
 
     err_code = nrf_drv_saadc_buffer_convert(&m_adc_buf[0], 1);
     if (err_code != NRF_SUCCESS)
     {
-        m_measuring = false;
         return err_code;
     }
 
     err_code = nrf_drv_saadc_buffer_convert(&m_adc_buf[1], 1);
     if (err_code != NRF_SUCCESS)
     {
-        m_measuring = false;
         return err_code;
     }
 
     err_code = nrf_drv_saadc_sample();
     if (err_code != NRF_SUCCESS)
     {
-        m_measuring = false;
         return err_code;
     }
 

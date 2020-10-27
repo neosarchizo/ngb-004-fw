@@ -125,7 +125,11 @@ static void qre1113gr_timeout(void *p_context)
     case 0:
     {
         err_code = n_saadc_measure(QRE1113GR_PIN_COL, on_a_measured);
-        APP_ERROR_CHECK(err_code);
+        if (err_code != NRF_SUCCESS)
+        {
+            m_idx_reading--;
+            app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
+        }
         break;
     }
     case 1:
@@ -139,7 +143,11 @@ static void qre1113gr_timeout(void *p_context)
     case 2:
     {
         err_code = n_saadc_measure(QRE1113GR_PIN_COL, on_b_measured);
-        APP_ERROR_CHECK(err_code);
+        if (err_code != NRF_SUCCESS)
+        {
+            m_idx_reading--;
+            app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
+        }
         break;
     }
     case 3:
@@ -153,7 +161,11 @@ static void qre1113gr_timeout(void *p_context)
     case 4:
     {
         err_code = n_saadc_measure(QRE1113GR_PIN_COL, on_c_measured);
-        APP_ERROR_CHECK(err_code);
+        if (err_code != NRF_SUCCESS)
+        {
+            m_idx_reading--;
+            app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
+        }
         break;
     }
     case 5:
@@ -168,7 +180,11 @@ static void qre1113gr_timeout(void *p_context)
     case 6:
     {
         err_code = n_saadc_measure(QRE1113GR_PIN_COL, on_d_measured);
-        APP_ERROR_CHECK(err_code);
+        if (err_code != NRF_SUCCESS)
+        {
+            m_idx_reading--;
+            app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
+        }
         break;
     }
     case 7:
@@ -183,7 +199,11 @@ static void qre1113gr_timeout(void *p_context)
     case 8:
     {
         err_code = n_saadc_measure(QRE1113GR_PIN_COL, on_e_measured);
-        APP_ERROR_CHECK(err_code);
+        if (err_code != NRF_SUCCESS)
+        {
+            m_idx_reading--;
+            app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
+        }
         break;
     }
     case 9:
@@ -198,7 +218,11 @@ static void qre1113gr_timeout(void *p_context)
     case 10:
     {
         err_code = n_saadc_measure(QRE1113GR_PIN_COL, on_f_measured);
-        APP_ERROR_CHECK(err_code);
+        if (err_code != NRF_SUCCESS)
+        {
+            m_idx_reading--;
+            app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
+        }
         break;
     }
     case 11:
@@ -213,7 +237,11 @@ static void qre1113gr_timeout(void *p_context)
     case 12:
     {
         err_code = n_saadc_measure(QRE1113GR_PIN_COL, on_g_measured);
-        APP_ERROR_CHECK(err_code);
+        if (err_code != NRF_SUCCESS)
+        {
+            m_idx_reading--;
+            app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
+        }
         break;
     }
     case 13:
@@ -228,7 +256,11 @@ static void qre1113gr_timeout(void *p_context)
     case 14:
     {
         err_code = n_saadc_measure(QRE1113GR_PIN_COL, on_h_measured);
-        APP_ERROR_CHECK(err_code);
+        if (err_code != NRF_SUCCESS)
+        {
+            m_idx_reading--;
+            app_timer_start(m_qre1113gr_timer, APP_TIMER_TICKS(QRE1113GR_READ_INTERVAL_MS), NULL);
+        }
 
         break;
     }

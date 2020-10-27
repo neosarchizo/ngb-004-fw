@@ -77,7 +77,10 @@ static void oversample_timeout(void *p_context)
     UNUSED_PARAMETER(p_context);
 
     ret_code_t err_code = n_saadc_measure(BAT_ADC_PIN, on_saadc_measured);
-    APP_ERROR_CHECK(err_code);
+    if (err_code != NRF_SUCCESS)
+    {
+        app_timer_start(m_bat_oversample_timer, BAT_OVERSAMPLE_INTERVAL, NULL);
+    }
 }
 
 static void charging_state_measure_timeout(void *p_context)
@@ -144,40 +147,40 @@ static void bat_timeout(void *p_context)
 ret_code_t battery_init(bat_cb_t on_measured, bat_cb_t on_charge_changed)
 {
     ret_code_t err_code = app_timer_create(&m_bat_timer,
-        APP_TIMER_MODE_REPEATED,
-        bat_timeout);
+                                           APP_TIMER_MODE_REPEATED,
+                                           bat_timeout);
     if (err_code != NRF_SUCCESS)
     {
         return err_code;
     }
 
     err_code = app_timer_create(&m_bat_uncharged_timer,
-        APP_TIMER_MODE_SINGLE_SHOT,
-        bat_timeout);
+                                APP_TIMER_MODE_SINGLE_SHOT,
+                                bat_timeout);
     if (err_code != NRF_SUCCESS)
     {
         return err_code;
     }
 
     err_code = app_timer_create(&m_bat_oversample_timer,
-        APP_TIMER_MODE_SINGLE_SHOT,
-        oversample_timeout);
+                                APP_TIMER_MODE_SINGLE_SHOT,
+                                oversample_timeout);
     if (err_code != NRF_SUCCESS)
     {
         return err_code;
     }
 
     err_code = app_timer_create(&m_bat_charging_state_timer,
-        APP_TIMER_MODE_REPEATED,
-        charging_state_timeout);
+                                APP_TIMER_MODE_REPEATED,
+                                charging_state_timeout);
     if (err_code != NRF_SUCCESS)
     {
         return err_code;
     }
 
     err_code = app_timer_create(&m_bat_charging_state_measure_timer,
-        APP_TIMER_MODE_SINGLE_SHOT,
-        charging_state_measure_timeout);
+                                APP_TIMER_MODE_SINGLE_SHOT,
+                                charging_state_measure_timeout);
     if (err_code != NRF_SUCCESS)
     {
         return err_code;
