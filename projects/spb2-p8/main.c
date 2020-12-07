@@ -416,7 +416,12 @@ static void char_cmd_write_callback(uint8_t *data, uint8_t length)
             tx_data[1] = ir_data.b;
             tx_data[2] = ir_data.c;
             tx_data[3] = ir_data.d;
-            notify_data(PACKET_CMD_IR, 0, tx_data, 4);
+            tx_data[4] = ir_data.e;
+            tx_data[5] = ir_data.f;
+            tx_data[6] = ir_data.g;
+            tx_data[7] = ir_data.h;
+
+            notify_data(PACKET_CMD_IR, 0, tx_data, 8);
             break;
         }
         case PACKET_CMD_HALL:
@@ -929,13 +934,17 @@ static void on_hall_changed(mlx90248_data data)
 static void on_ir_measured(qre1113gr_data data)
 {
     NRF_LOG_INFO("on_ir_measured");
-    uint8_t tx_data[4];
+    uint8_t tx_data[8];
 
     tx_data[0] = data.a;
     tx_data[1] = data.b;
     tx_data[2] = data.c;
     tx_data[3] = data.d;
-    notify_data(PACKET_CMD_IR, 0, tx_data, 4);
+    tx_data[4] = data.e;
+    tx_data[5] = data.f;
+    tx_data[6] = data.g;
+    tx_data[7] = data.h;
+    notify_data(PACKET_CMD_IR, 0, tx_data, 8);
 }
 
 static void check_overdose()
