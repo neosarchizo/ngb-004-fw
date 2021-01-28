@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include "app_util_platform.h"
 
+#define N_SAADC_OVERFLOW 16384 // 2^14 SAADC Resolution
+
 #ifdef __cplusplus
 extern "C"
 {

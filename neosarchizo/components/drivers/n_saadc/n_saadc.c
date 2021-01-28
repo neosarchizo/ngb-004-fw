@@ -30,7 +30,13 @@ void saadc_event_handler(nrf_drv_saadc_evt_t const *p_event)
         nrf_drv_saadc_uninit();
         if (m_on_measured != NULL)
         {
-            m_on_measured(adc_result);
+            uint16_t value = adc_result;
+
+            if (value < N_SAADC_OVERFLOW)
+            {
+                m_on_measured(value);
+            }
+            
             m_on_measured = NULL;
         }
         

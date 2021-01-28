@@ -1044,7 +1044,7 @@ static void gpio_init(void)
     err_code = multiplexer_init();
     APP_ERROR_CHECK(err_code);
 
-    // g_motor_set_mode(G_MOTOR_MODE_ON);
+    //g_motor_set_mode(G_MOTOR_MODE_ON);
     g_motor_set_mode(G_MOTOR_MODE_OFF);
 }
 
