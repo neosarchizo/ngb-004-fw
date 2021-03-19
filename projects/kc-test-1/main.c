@@ -52,6 +52,8 @@
 #include "boards.h"
 #include "app_uart.h"
 
+#include "nrf_gpio.h"
+
 
 // @note: The BLE DTM 2-wire UART standard specifies 8 data bits, 1 stop bit, no flow control.
 //        These parameters are not configurable in the BLE standard.
@@ -153,7 +155,10 @@ int main(void)
     uint8_t     rx_byte;                   // Last byte read from UART.
     dtm_event_t result;                    // Result of a DTM operation.
 
-    bsp_board_init(BSP_INIT_LEDS);
+    // bsp_board_init(BSP_INIT_LEDS);
+
+    nrf_gpio_cfg_output(18);
+    nrf_gpio_pin_write(18, 0);
     
     uart_init();
 
