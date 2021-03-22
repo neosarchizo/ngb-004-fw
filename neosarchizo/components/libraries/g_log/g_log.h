@@ -6,6 +6,7 @@
 
 #include <sdk_errors.h>
 #include "nrf_error.h"
+#include "qre1113gr.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -19,12 +20,17 @@ extern "C"
 #define G_LOG_FDS_UPDATE_DELAY_MS 3000
 #define G_LOG_READ_INTERVAL_MS 20
 
+#define G_LOG_MODE_CLOSED 0
+#define G_LOG_MODE_OPENED 1
+
     typedef struct
     {
         uint16_t current_days; // from 2000-01-01
         uint8_t hours;
         uint8_t minutes;
         uint8_t seconds;
+        uint8_t mode;
+        uint8_t partitions;
     } g_log_time;
 
     typedef struct
@@ -36,7 +42,7 @@ extern "C"
     typedef void (*g_log_cb_t)(g_log_time data);
 
     extern ret_code_t g_log_init(g_log_cb_t on_log_read);
-    extern ret_code_t g_log_add();
+    extern ret_code_t g_log_add(qre1113gr_data ir_data, uint8_t mode);
     extern ret_code_t g_log_clear();
     extern ret_code_t g_log_get_data();
     extern bool g_log_initiated();

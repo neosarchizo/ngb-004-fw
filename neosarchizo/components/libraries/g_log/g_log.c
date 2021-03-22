@@ -60,7 +60,6 @@ static ret_code_t fds_update()
     return err_code;
 }
 
-
 ret_code_t g_log_init(g_log_cb_t on_log_read)
 {
     ret_code_t err_code = NRF_SUCCESS;
@@ -89,14 +88,13 @@ ret_code_t g_log_init(g_log_cb_t on_log_read)
                                 APP_TIMER_MODE_SINGLE_SHOT,
                                 g_log_fds_timeout);
 
-
     m_on_log_read = on_log_read;
     m_initiated = true;
 
     return err_code;
 }
 
-extern ret_code_t g_log_add()
+extern ret_code_t g_log_add(qre1113gr_data ir_data, uint8_t mode)
 {
     ret_code_t err_code = NRF_SUCCESS;
 
@@ -108,11 +106,55 @@ extern ret_code_t g_log_add()
     n_time_data now;
     n_time_get(&now);
 
+    uint8_t partitions = 0;
+
+    if (ir_data.a)
+    {
+        partitions |= 1;
+    }
+
+    if (ir_data.b)
+    {
+        partitions |= 1 << 1;
+    }
+
+    if (ir_data.c)
+    {
+        partitions |= 1 << 2;
+    }
+
+    if (ir_data.d)
+    {
+        partitions |= 1 << 3;
+    }
+
+    if (ir_data.e)
+    {
+        partitions |= 1 << 4;
+    }
+
+    if (ir_data.f)
+    {
+        partitions |= 1 << 5;
+    }
+
+    if (ir_data.g)
+    {
+        partitions |= 1 << 6;
+    }
+
+    if (ir_data.h)
+    {
+        partitions |= 1 << 7;
+    }
+
     g_log_time log_time = {
         .current_days = now.current_days,
         .hours = now.hours,
         .minutes = now.minutes,
         .seconds = now.seconds,
+        .mode = mode,
+        .partitions = partitions,
     };
 
     if (m_data.length < G_LOG_MAXIMUM_LENGTH)

@@ -120,6 +120,8 @@ static volatile bool m_connected_led_on = false;
 
 // Buzzer
 
+static volatile bool m_lid_closing = false;
+
 #define BUZZER_NOTES_LENGTH 1
 
 static buzzer_note m_buzzer_notes[BUZZER_NOTES_LENGTH] = {
@@ -934,6 +936,17 @@ static void on_hall_changed(mlx90248_data data)
 static void on_ir_measured(qre1113gr_data data)
 {
     NRF_LOG_INFO("on_ir_measured");
+
+    if (m_lid_closing)
+    {
+        m_lid_closing = false;
+
+        if (g_log_initiated() && m_conn_handle == BLE_CONN_HANDLE_INVALID)
+        {
+            g_log_add(data, G_LOG_MODE_CLOSED);
+        }
+    }
+
     uint8_t tx_data[8];
 
     tx_data[0] = data.a;
@@ -985,10 +998,7 @@ static void check_overdose()
 
 static void on_lid_closed(mlx90248_data data)
 {
-    if (g_log_initiated() && m_conn_handle == BLE_CONN_HANDLE_INVALID)
-    {
-        g_log_add();
-    }
+    m_lid_closing = true;
 
     qre1113gr_update();
 
@@ -997,6 +1007,14 @@ static void on_lid_closed(mlx90248_data data)
 
 static void on_lid_opened(mlx90248_data data)
 {
+    if (g_log_initiated() && m_conn_handle == BLE_CONN_HANDLE_INVALID)
+    {
+        qre1113gr_data ir_data;
+        qre1113gr_read(&ir_data);
+
+        g_log_add(ir_data, G_LOG_MODE_OPENED);
+    }
+    
     if (alarm_alarming())
     {
         alarm_cancel();
