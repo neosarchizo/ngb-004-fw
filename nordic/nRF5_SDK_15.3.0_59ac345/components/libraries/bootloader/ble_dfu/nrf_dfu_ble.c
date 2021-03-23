@@ -913,6 +913,15 @@ static uint32_t gap_address_change(void)
 }
 #endif
 
+static void insert_hex_string(char * text, uint8_t value) {
+    char hex_numbers[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+    uint8_t quotient = value / 16;
+    uint8_t remainder = value % 16;
+
+    text[0] = hex_numbers[quotient];
+    text[1] = hex_numbers[remainder];
+}
 
 /**@brief     Function for initializing GAP.
  *
@@ -933,21 +942,36 @@ static uint32_t gap_params_init(void)
     err_code = gap_address_change();
     VERIFY_SUCCESS(err_code);
 
-    if ((m_flags & DFU_BLE_FLAG_USE_ADV_NAME) != 0)
-    {
-        NRF_LOG_DEBUG("Setting adv name: %s, length: %d", m_adv_name.name, m_adv_name.len);
-        device_name = m_adv_name.name;
-        name_len    = m_adv_name.len;
-    }
-    else
+    // if ((m_flags & DFU_BLE_FLAG_USE_ADV_NAME) != 0)
+    // {
+    //     NRF_LOG_DEBUG("Setting adv name: %s, length: %d", m_adv_name.name, m_adv_name.len);
+    //     device_name = m_adv_name.name;
+    //     name_len    = m_adv_name.len;
+    // }
+    // else
 #endif
+    // {
+    //     NRF_LOG_DEBUG("Using default advertising name");
+    //     device_name = (uint8_t const *)(NRF_DFU_BLE_ADV_NAME);
+    //     name_len    = strlen(NRF_DFU_BLE_ADV_NAME);
+    // }
+
+    char name[strlen(NRF_DFU_BLE_ADV_NAME) + 4];
+
+    for (uint8_t i = 0; i < strlen(NRF_DFU_BLE_ADV_NAME); i++)
     {
-        NRF_LOG_DEBUG("Using default advertising name");
-        device_name = (uint8_t const *)(NRF_DFU_BLE_ADV_NAME);
-        name_len    = strlen(NRF_DFU_BLE_ADV_NAME);
+        name[i] = NRF_DFU_BLE_ADV_NAME[i];
     }
 
-    err_code = sd_ble_gap_device_name_set(&sec_mode, device_name, name_len);
+    ble_gap_addr_t addr;
+
+    err_code = sd_ble_gap_addr_get(&addr);
+    APP_ERROR_CHECK(err_code);
+
+    insert_hex_string(name + strlen(NRF_DFU_BLE_ADV_NAME), addr.addr[1]);
+    insert_hex_string(name + strlen(NRF_DFU_BLE_ADV_NAME) + 2, addr.addr[0]);
+
+    err_code = sd_ble_gap_device_name_set(&sec_mode, name, sizeof name);
     VERIFY_SUCCESS(err_code);
 
     err_code = sd_ble_gap_ppcp_set(&m_gap_conn_params);
