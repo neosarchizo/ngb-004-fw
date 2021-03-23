@@ -57,3 +57,10 @@ Output/
 .vscode/
 *.jlink
 *.emSession
+app_*.zip
+
+projects/app-settings.hex
+projects/app-settings-bl.hex
+projects/app-settings-bl-sd.hex
+projects/bootloader_setting.hex
+venv
