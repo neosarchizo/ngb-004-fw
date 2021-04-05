@@ -508,6 +508,121 @@ static void char_cmd_write_callback(uint8_t *data, uint8_t length)
 
         switch (cmd)
         {
+        case PACKET_CMD_GET_BL_NAME:
+        {
+            NRF_LOG_INFO("PACKET_CMD_GET_BL_NAME");
+            if (length != 0)
+            {
+                notify_response(PACKET_CMD_GET_BL_NAME, 0, false);
+                return;
+            }
+
+            uint8_t len = dfu_util_get_dfu_adv_name(tx_data);
+            notify_data(PACKET_CMD_GET_BL_NAME, 0, tx_data, len);
+            break;
+        }
+        case PACKET_CMD_GET_FW_VERSION:
+        {
+            NRF_LOG_INFO("PACKET_CMD_GET_FW_VERSION");
+
+            if (length != 0)
+            {
+                notify_response(PACKET_CMD_GET_FW_VERSION, 0, false);
+                return;
+            }
+
+            uint16_t version = dfu_util_get_fw_version();
+
+            tx_data[0] = version & 0xFF;
+            tx_data[1] = (version >> 8) & 0xFF;
+
+            notify_data(PACKET_CMD_GET_FW_VERSION, 0, tx_data, 2);
+            break;
+        }
+        case PACKET_CMD_SET_N_TIME:
+        {
+            NRF_LOG_INFO("PACKET_CMD_SET_N_TIME");
+            if (length != 6)
+            {
+                notify_response(PACKET_CMD_SET_N_TIME, 0, false);
+                return;
+            }
+
+            tx_data[0] = n_time_set((n_time_data *)buffer);
+
+            notify_data(PACKET_CMD_SET_N_TIME, 0, tx_data, 1);
+            break;
+        }
+        case PACKET_CMD_GET_LOGS:
+        {
+            NRF_LOG_INFO("PACKET_CMD_GET_LOGS");
+            if (length != 0)
+            {
+                notify_response(PACKET_CMD_GET_LOGS, 0, false);
+                return;
+            }
+
+            g_log_get_data();
+            break;
+        }
+        case PACKET_CMD_CLEAR_LOGS:
+        {
+            NRF_LOG_INFO("PACKET_CMD_CLEAR_LOGS");
+            if (length != 0)
+            {
+                notify_response(PACKET_CMD_CLEAR_LOGS, 0, false);
+                return;
+            }
+
+            tx_data[0] = g_log_clear();
+            notify_data(PACKET_CMD_CLEAR_LOGS, 0, tx_data, 1);
+            break;
+        }
+        case PACKET_CMD_CLEAR_ALARMS:
+        {
+            NRF_LOG_INFO("PACKET_CMD_CLEAR_ALARMS");
+            if (length != 0)
+            {
+                notify_response(PACKET_CMD_CLEAR_ALARMS, 0, false);
+                return;
+            }
+
+            tx_data[0] = alarm_clear();
+            notify_data(PACKET_CMD_CLEAR_ALARMS, 0, tx_data, 1);
+            break;
+        }
+        case PACKET_CMD_ADD_ALARM:
+        {
+            NRF_LOG_INFO("PACKET_CMD_ADD_ALARM");
+
+            if (length != 7)
+            {
+                notify_response(PACKET_CMD_ADD_ALARM, 0, false);
+                NRF_LOG_INFO("PACKET_CMD_ADD_ALARM : failed");
+                return;
+            }
+
+            tx_data[0] = alarm_add((alarm_time *)buffer);
+            notify_data(PACKET_CMD_ADD_ALARM, 0, tx_data, 1);
+
+            NRF_LOG_HEXDUMP_INFO(buffer, 7);
+
+            NRF_LOG_INFO("PACKET_CMD_ADD_ALARM : success");
+            break;
+        }
+        case PACKET_CMD_BATTERY:
+        {
+            NRF_LOG_INFO("PACKET_CMD_BATTERY");
+            if (length != 0)
+            {
+                notify_response(PACKET_CMD_BATTERY, 0, false);
+                return;
+            }
+
+            tx_data[0] = battery_get_level();
+            notify_data(PACKET_CMD_BATTERY, 0, tx_data, 1);
+            break;
+        }
         case PACKET_CMD_IR:
         {
             NRF_LOG_INFO("PACKET_CMD_IR");
@@ -557,6 +672,7 @@ static void char_cmd_write_callback(uint8_t *data, uint8_t length)
         }
         case PACKET_CMD_BUTTON:
         {
+            NRF_LOG_INFO("PACKET_CMD_BUTTON");
             if (length != 0)
             {
                 notify_response(PACKET_CMD_BUTTON, 0, false);
@@ -569,6 +685,7 @@ static void char_cmd_write_callback(uint8_t *data, uint8_t length)
         }
         case PACKET_CMD_LED:
         {
+            NRF_LOG_INFO("PACKET_CMD_LED");
             if (length != 3)
             {
                 notify_response(PACKET_CMD_LED, 0, false);
@@ -584,6 +701,7 @@ static void char_cmd_write_callback(uint8_t *data, uint8_t length)
         }
         case PACKET_CMD_BUZZER:
         {
+            NRF_LOG_INFO("PACKET_CMD_BUZZER");
             if (length != 0)
             {
                 notify_response(PACKET_CMD_BUZZER, 0, false);
@@ -595,32 +713,9 @@ static void char_cmd_write_callback(uint8_t *data, uint8_t length)
             notify_response(PACKET_CMD_BUZZER, 0, true);
             break;
         }
-        case PACKET_CMD_SET_N_TIME:
-        {
-            if (length != 6)
-            {
-                notify_response(PACKET_CMD_SET_N_TIME, 0, false);
-                return;
-            }
-
-            tx_data[0] = n_time_set((n_time_data *)buffer);
-            notify_data(PACKET_CMD_SET_N_TIME, 0, tx_data, 1);
-            break;
-        }
-        case PACKET_CMD_BATTERY:
-        {
-            if (length != 0)
-            {
-                notify_response(PACKET_CMD_BATTERY, 0, false);
-                return;
-            }
-
-            tx_data[0] = battery_get_level();
-            notify_data(PACKET_CMD_BATTERY, 0, tx_data, 1);
-            break;
-        }
         case PACKET_CMD_CHARGING:
         {
+            NRF_LOG_INFO("PACKET_CMD_CHARGING");
             if (length != 0)
             {
                 notify_response(PACKET_CMD_CHARGING, 0, false);
@@ -631,62 +726,9 @@ static void char_cmd_write_callback(uint8_t *data, uint8_t length)
             notify_data(PACKET_CMD_CHARGING, 0, tx_data, 1);
             break;
         }
-        case PACKET_CMD_GET_LOGS:
-        {
-            if (length != 0)
-            {
-                notify_response(PACKET_CMD_GET_LOGS, 0, false);
-                return;
-            }
-
-            g_log_get_data();
-            break;
-        }
-        case PACKET_CMD_CLEAR_LOGS:
-        {
-            if (length != 0)
-            {
-                notify_response(PACKET_CMD_CLEAR_LOGS, 0, false);
-                return;
-            }
-
-            tx_data[0] = g_log_clear();
-            notify_data(PACKET_CMD_CLEAR_LOGS, 0, tx_data, 1);
-            break;
-        }
-        case PACKET_CMD_CLEAR_ALARMS:
-        {
-            if (length != 0)
-            {
-                notify_response(PACKET_CMD_CLEAR_ALARMS, 0, false);
-                return;
-            }
-
-            tx_data[0] = alarm_clear();
-            notify_data(PACKET_CMD_CLEAR_ALARMS, 0, tx_data, 1);
-            break;
-        }
-        case PACKET_CMD_ADD_ALARM:
-        {
-            NRF_LOG_INFO("PACKET_CMD_ADD_ALARM");
-
-            if (length != 7)
-            {
-                notify_response(PACKET_CMD_ADD_ALARM, 0, false);
-                NRF_LOG_INFO("PACKET_CMD_ADD_ALARM : failed");
-                return;
-            }
-
-            tx_data[0] = alarm_add((alarm_time *)buffer);
-            notify_data(PACKET_CMD_ADD_ALARM, 0, tx_data, 1);
-
-            NRF_LOG_HEXDUMP_INFO(buffer, 7);
-
-            NRF_LOG_INFO("PACKET_CMD_ADD_ALARM : success");
-            break;
-        }
         case PACKET_CMD_SET_ALARM_MUTED:
         {
+            NRF_LOG_INFO("PACKET_CMD_SET_ALARM_MUTED");
             if (length != 1)
             {
                 notify_response(PACKET_CMD_SET_ALARM_MUTED, 0, false);
@@ -700,6 +742,7 @@ static void char_cmd_write_callback(uint8_t *data, uint8_t length)
         }
         case PACKET_CMD_TRIG_ALARM:
         {
+            NRF_LOG_INFO("PACKET_CMD_TRIG_ALARM");
             if (length != 0)
             {
                 notify_response(PACKET_CMD_TRIG_ALARM, 0, false);
@@ -708,6 +751,11 @@ static void char_cmd_write_callback(uint8_t *data, uint8_t length)
 
             alarm_trig(false, 0, 0);
             notify_response(PACKET_CMD_TRIG_ALARM, 0, true);
+            break;
+        }
+        case PACKET_CMD_OVERDOSE_ALARM:
+        {
+            NRF_LOG_INFO("PACKET_CMD_OVERDOSE_ALARM");
             break;
         }
         default:
