@@ -43,18 +43,20 @@ bool packet_check(uint8_t length, uint8_t *data)
 
     switch (*(data + 1))
     {
+    case PACKET_CMD_GET_BL_NAME:
+    case PACKET_CMD_GET_FW_VERSION:
+    case PACKET_CMD_SET_N_TIME:
+    case PACKET_CMD_GET_LOGS:
+    case PACKET_CMD_CLEAR_LOGS:
+    case PACKET_CMD_CLEAR_ALARMS:
+    case PACKET_CMD_ADD_ALARM:
+    case PACKET_CMD_BATTERY:
     case PACKET_CMD_IR:
     case PACKET_CMD_HALL:
     case PACKET_CMD_BUTTON:
     case PACKET_CMD_LED:
     case PACKET_CMD_BUZZER:
-    case PACKET_CMD_SET_N_TIME:
-    case PACKET_CMD_BATTERY:
     case PACKET_CMD_CHARGING:
-    case PACKET_CMD_GET_LOGS:
-    case PACKET_CMD_CLEAR_LOGS:
-    case PACKET_CMD_CLEAR_ALARMS:
-    case PACKET_CMD_ADD_ALARM:
     case PACKET_CMD_SET_ALARM_MUTED:
     case PACKET_CMD_TRIG_ALARM:
     case PACKET_CMD_OVERDOSE_ALARM:
