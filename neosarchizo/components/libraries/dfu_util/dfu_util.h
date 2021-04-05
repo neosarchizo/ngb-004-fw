@@ -13,8 +13,8 @@ extern "C"
 #endif
 
 // DFU
-#define DFU_UTIL_DFU_ADV_PREFIX "SWB"
-#define DFU_UTIL_FW_VERSION 1
+#define DFU_UTIL_DFU_ADV_PREFIX "SP2P8B"
+#define DFU_UTIL_FW_VERSION 0
 
     extern uint8_t dfu_util_get_dfu_adv_name(uint8_t *data);
     extern uint16_t dfu_util_get_fw_version();
