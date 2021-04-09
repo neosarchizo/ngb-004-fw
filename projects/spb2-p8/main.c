@@ -1256,8 +1256,8 @@ int main(void)
 
     timers_init();
 
-    // err_code = ble_dfu_buttonless_async_svci_init();
-    // APP_ERROR_CHECK(err_code);
+    err_code = ble_dfu_buttonless_async_svci_init();
+    APP_ERROR_CHECK(err_code);
 
     power_management_init();
 
