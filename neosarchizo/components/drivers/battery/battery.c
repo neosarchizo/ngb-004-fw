@@ -20,7 +20,7 @@ static volatile uint8_t m_bat_level = 0;
 static volatile uint8_t m_charging_state = BAT_CHARGING_OFF;
 static volatile bool m_measuring = false;
 
-static volatile uint16_t m_mv = 0;
+static volatile uint32_t m_sum = 0;
 static volatile uint8_t m_sample_count = 0;
 
 static bat_cb_t m_on_measured = NULL;
@@ -36,26 +36,28 @@ static void on_saadc_measured(uint16_t value)
 
     if (m_sample_count++ == 0)
     {
-        m_mv = mv;
+        m_sum = mv;
     }
     else
     {
-        m_mv = (m_mv + mv) / 2;
+        m_sum += mv;
     }
 
     if (m_sample_count == BAT_OVERSAMPLE)
     {
-        if (m_mv >= BAT_VOLTAGE_MV_MAXIMUM)
+        uint32_t avg = m_sum / BAT_OVERSAMPLE;
+
+        if (avg >= BAT_VOLTAGE_MV_MAXIMUM)
         {
             m_bat_level = 100;
         }
-        else if (m_mv <= BAT_VOLTAGE_MV_MINIMUM)
+        else if (avg <= BAT_VOLTAGE_MV_MINIMUM)
         {
             m_bat_level = 0;
         }
         else
         {
-            m_bat_level = 100 * (((float)m_mv - BAT_VOLTAGE_MV_MINIMUM) / (BAT_VOLTAGE_MV_MAXIMUM - BAT_VOLTAGE_MV_MINIMUM));
+            m_bat_level = 100 * (((float)avg - BAT_VOLTAGE_MV_MINIMUM) / (BAT_VOLTAGE_MV_MAXIMUM - BAT_VOLTAGE_MV_MINIMUM));
         }
 
         NRF_LOG_INFO("battery : %d", m_bat_level);
@@ -77,6 +79,7 @@ static void oversample_timeout(void *p_context)
     UNUSED_PARAMETER(p_context);
 
     ret_code_t err_code = n_saadc_measure(BAT_ADC_PIN, on_saadc_measured);
+
     if (err_code != NRF_SUCCESS)
     {
         app_timer_start(m_bat_oversample_timer, BAT_OVERSAMPLE_INTERVAL, NULL);
@@ -127,7 +130,6 @@ static void bat_measure()
         return;
     }
 
-    m_mv = 0;
     m_sample_count = 0;
     m_measuring = true;
 
