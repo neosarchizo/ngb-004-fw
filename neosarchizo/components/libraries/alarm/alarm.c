@@ -9,6 +9,7 @@
 #include "buzzer.h"
 #include "nrf_log.h"
 #include "g_led.h"
+#include "g_motor.h"
 #include <string.h>
 
 #define ALARM_NOTES_LENGTH 5
@@ -61,6 +62,7 @@ static void alarm_timeout(void *p_context)
     ret_code_t err_code = NRF_SUCCESS;
 
     m_alarming = false;
+    g_motor_set_mode(G_MOTOR_MODE_OFF);
 
     NRF_LOG_INFO("alarm_timeout");
 
@@ -390,6 +392,7 @@ ret_code_t alarm_cancel(void)
     ret_code_t err_code = NRF_SUCCESS;
 
     m_alarming = false;
+    g_motor_set_mode(G_MOTOR_MODE_OFF);
     m_snooze_repeat = 0;
     m_snooze_interval = 0;
 
@@ -406,6 +409,7 @@ ret_code_t alarm_trig(bool muted, uint8_t snooze_repeat, uint8_t snooze_interval
 
     // TODO g_led
     m_alarming = true;
+    g_motor_set_mode(G_MOTOR_MODE_ON);
     m_snooze_repeat = snooze_repeat;
     m_snooze_interval = snooze_interval;
 
